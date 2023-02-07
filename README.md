@@ -8,4 +8,4 @@ is this updating?
 [![Releases](https://img.shields.io/github/release/jules946/sem/all.svg?style=flat-square)](https://github.com/jules946/sem/releases)
 
 # Software Engineering Methods
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/jules946/sem/<A workflow for my Hello World App>/<develop>?style=flat-square)
+![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/jules946/sem/main.yml?branch=develop&style=flat-square)
