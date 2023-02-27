@@ -3,12 +3,20 @@ package com.napier.sem;
 import java.sql.*;
 
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         // Create new Application
         App a = new App();
 
         // Connect to database
         a.connect();
+
+        // Get Employee
+        Employee emp = a.getEmployee(255530);
+
+
+        // Display results
+        a.displayEmployee(emp);
 
         // Disconnect from database
         a.disconnect();
@@ -72,9 +80,14 @@ public class App {
             Statement stmt = con.createStatement();
             // Create string for SQL statement
             String strSelect =
-                    "SELECT emp_no, first_name, last_name "
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, titles.title, salaries.salary, departments.dept_name, dept_manager.emp_no "
                             + "FROM employees "
-                            + "WHERE emp_no = " + ID;
+                            + "JOIN titles ON (employees.emp_no = titles.emp_no)"
+                            + "JOIN salaries ON (employees.emp_no = salaries.emp_no)"
+                            + "JOIN dept_emp ON (dept_emp.emp_no = employees.emp_no)"
+                            + "JOIN departments ON (departments.dept_no = dept_emp.dept_no)"
+                            + "JOIN dept_manager ON (departments.dept_no = dept_manager.dept_no)"
+                            + "WHERE employees.emp_no = " + ID;
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
             // Return new employee if valid.
@@ -82,9 +95,13 @@ public class App {
             if (rset.next())
             {
                 Employee emp = new Employee();
-                emp.emp_no = rset.getInt("emp_no");
-                emp.first_name = rset.getString("first_name");
-                emp.last_name = rset.getString("last_name");
+                emp.emp_no = rset.getInt("employees.emp_no");
+                emp.first_name = rset.getString("employees.first_name");
+                emp.last_name = rset.getString("employees.last_name");
+                emp.title = rset.getString("titles.title");
+                emp.salary = rset.getInt("salaries.salary");
+                emp.dept_name = rset.getString("departments.dept_name");
+                emp.manager = rset.getString("dept_manager.emp_no");
                 return emp;
             }
             else
@@ -97,4 +114,20 @@ public class App {
             return null;
         }
     }
+
+    public void displayEmployee(Employee emp)
+    {
+        if (emp != null)
+        {
+            System.out.println(
+                            emp.emp_no + " "
+                            + emp.first_name + " "
+                            + emp.last_name + "\n"
+                            + "Title: " + emp.title + "\n"
+                            + "Salary:" + emp.salary + "\n"
+                            + "Department: " + emp.dept_name + "\n"
+                            + "Manager ID: " + emp.manager + "\n");
+        }
+    }
+
 }
