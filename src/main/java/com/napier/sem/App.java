@@ -4,8 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class App {
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         // Create new Application
         App a = new App();
 
@@ -75,10 +74,8 @@ public class App {
         }
     }
 
-    public Employee getEmployee(int ID)
-    {
-        try
-        {
+    public Employee getEmployee(int ID) {
+        try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
             // Create string for SQL statement
@@ -95,8 +92,7 @@ public class App {
             ResultSet rset = stmt.executeQuery(strSelect);
             // Return new employee if valid.
             // Check one is returned
-            if (rset.next())
-            {
+            if (rset.next()) {
                 Employee emp = new Employee();
                 emp.emp_no = rset.getInt("employees.emp_no");
                 emp.first_name = rset.getString("employees.first_name");
@@ -106,24 +102,19 @@ public class App {
                 emp.dept_name = rset.getString("departments.dept_name");
                 emp.manager = rset.getString("dept_manager.emp_no");
                 return emp;
-            }
-            else
+            } else
                 return null;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("Failed to get employee details");
             return null;
         }
     }
 
-    public void displayEmployee(Employee emp)
-    {
-        if (emp != null)
-        {
+    public void displayEmployee(Employee emp) {
+        if (emp != null) {
             System.out.println(
-                            emp.emp_no + " "
+                    emp.emp_no + " "
                             + emp.first_name + " "
                             + emp.last_name + "\n"
                             + "Title: " + emp.title + "\n"
@@ -135,12 +126,11 @@ public class App {
 
     /**
      * Gets all the current employees and salaries.
+     *
      * @return A list of all employees and salaries, or null if there is an error.
      */
-    public ArrayList<Employee> getAllSalaries()
-    {
-        try
-        {
+    public ArrayList<Employee> getAllSalaries() {
+        try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
             // Create string for SQL statement
@@ -153,8 +143,7 @@ public class App {
             ResultSet rset = stmt.executeQuery(strSelect);
             // Extract employee information
             ArrayList<Employee> employees = new ArrayList<Employee>();
-            while (rset.next())
-            {
+            while (rset.next()) {
                 Employee emp = new Employee();
                 emp.emp_no = rset.getInt("employees.emp_no");
                 emp.first_name = rset.getString("employees.first_name");
@@ -163,20 +152,16 @@ public class App {
                 employees.add(emp);
             }
             return employees;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("Failed to get salary details");
             return null;
         }
     }
 
-    public ArrayList<Employee> getRoleSalaries(String title)
-    {
+    public ArrayList<Employee> getRoleSalaries(String title) {
         String sqlTitle = "'" + title + "'";
-        try
-        {
+        try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
             // Create string for SQL statement
@@ -193,8 +178,7 @@ public class App {
 
             // Extract employee information
             ArrayList<Employee> employees = new ArrayList<Employee>();
-            while (rset.next())
-            {
+            while (rset.next()) {
                 Employee emp = new Employee();
                 emp.emp_no = rset.getInt("employees.emp_no");
                 emp.first_name = rset.getString("employees.first_name");
@@ -203,9 +187,7 @@ public class App {
                 employees.add(emp);
             }
             return employees;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("Failed to get salary details");
             return null;
@@ -213,21 +195,36 @@ public class App {
     }
 
     /**
+     * Gets a department based on department number
+     */
+    public Department getDepartment(String dept_no){
+
+    }
+
+    /**
+     * gets salaries of all employees based on a department
+     */
+    public ArrayList<Employee> getSalariesByDepartment(Department dept){
+
+    }
+
+    /**
      * Prints a list of employees.
+     *
      * @param employees The list of employees to print.
      */
-    public void printSalaries(ArrayList<Employee> employees)
-    {
+    public void printSalaries(ArrayList<Employee> employees) {
         // Print header
         System.out.println(String.format("%-10s %-15s %-20s %-8s", "Emp No", "First Name", "Last Name", "Salary"));
 
         // Loop over all employees in the list
-        for (Employee emp : employees)
-        {
+        for (Employee emp : employees) {
             String emp_string =
                     String.format("%-10s %-15s %-20s %-8s",
                             emp.emp_no, emp.first_name, emp.last_name, emp.salary);
             System.out.println(emp_string);
         }
     }
+
 }
+
