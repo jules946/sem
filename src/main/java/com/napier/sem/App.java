@@ -11,14 +11,32 @@ public class App {
         // Connect to database
         a.connect();
 
-        //test a role
-        String role = "Engineer";
 
-        // Extract employee salary information
-        ArrayList<Employee> employees = a.getRoleSalaries(role);
+        // salaries by role
+            //test a role
+            //String role = "Engineer";
 
-        //print out all salaries
-        a.printSalaries(employees);
+            // Extract employee salary information
+            //ArrayList<Employee> employees = a.getRoleSalaries(role);
+
+            //print out all salaries
+            //a.printSalaries(employees);
+
+        //salaries by department
+            //test a department
+            String department = "Sales";
+
+            //get department
+            Department department1 = a.getDepartment(department);
+
+            //print department details
+            a.displayDepartment(department1);
+
+            // Extract employee salary info
+            //ArrayList<Employee> employees1 = a.getSalariesByDepartment(department1);
+
+            //print out all salaries
+            //a.printSalaries(employees1);
 
         // Disconnect from database
         a.disconnect();
@@ -80,7 +98,7 @@ public class App {
             Statement stmt = con.createStatement();
             // Create string for SQL statement
             String strSelect =
-                    "SELECT employees.emp_no, employees.first_name, employees.last_name, titles.title, salaries.salary, departments.dept_name, dept_manager.emp_no "
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, titles.title, salaries.salary, departments.dept_name, dept_manager.emp_no, departments.dept_no  "
                             + "FROM employees "
                             + "JOIN titles ON (employees.emp_no = titles.emp_no)"
                             + "JOIN salaries ON (employees.emp_no = salaries.emp_no)"
@@ -99,8 +117,17 @@ public class App {
                 emp.last_name = rset.getString("employees.last_name");
                 emp.title = rset.getString("titles.title");
                 emp.salary = rset.getInt("salaries.salary");
-                emp.dept_name = rset.getString("departments.dept_name");
-                emp.manager = rset.getString("dept_manager.emp_no");
+
+                //get id of department
+                String deptId = rset.getString("departments.dept_no");
+
+                //look up Department instance for department name
+                Department department = new Department();
+                department.dept_no = rset.getString("departments.dept_no");
+                department.dept_name = rset.getString("departments.dept_name");
+                emp.dept = department;
+
+                emp.manager = getEmployee(rset.getInt("dept_manager.emp_no"));
                 return emp;
             } else
                 return null;
@@ -119,7 +146,7 @@ public class App {
                             + emp.last_name + "\n"
                             + "Title: " + emp.title + "\n"
                             + "Salary:" + emp.salary + "\n"
-                            + "Department: " + emp.dept_name + "\n"
+                            + "Department: " + emp.dept + "\n"
                             + "Manager ID: " + emp.manager + "\n");
         }
     }
@@ -197,14 +224,95 @@ public class App {
     /**
      * Gets a department based on department number
      */
-    public Department getDepartment(String dept_no){
+    public Department getDepartment(String dept_name){
+
+        String Sqldept_name = "'" + dept_name + "'";
+        try {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT departments.dept_no, departments.dept_name, dept_manager.emp_no "
+                            + "FROM departments "
+                            + "JOIN dept_manager ON (departments.dept_no = dept_manager.dept_no) "
+                            + "WHERE departments.dept_name = " + Sqldept_name;
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            /// Return department if valid.
+            if (rset.next()) {
+                Department dep = new Department();
+                dep.dept_no = rset.getString("departments.dept_no");
+                dep.dept_name = rset.getString("departments.dept_name");
+
+                // Get the ID of the manager
+                int managerId = rset.getInt("dept_manager.emp_no");
+
+                // Look up the Employee instance for the manager
+                Employee manager = getEmployee(managerId);
+                if (manager != null) {
+                    dep.manager = manager;
+                    return dep;
+                }
+            }
+            return null;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get department details");
+            return null;
+        }
 
     }
 
+    public void displayDepartment(Department dep) {
+        if (dep != null) {
+            System.out.println(
+                    dep.dept_name + " "
+                            + dep.dept_no);
+        }
+    }
     /**
      * gets salaries of all employees based on a department
      */
     public ArrayList<Employee> getSalariesByDepartment(Department dept){
+
+        String sqlDepName = "'" + dept.dept_name + "'";
+        try {
+
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary"
+            + "FROM employees, salaries, dept_emp, departments "
+                            + "WHERE employees.emp_no = salaries.emp_no "
+                            + "AND employees.emp_no = dept_emp.emp_no "
+                            + "AND dept_emp.dept_no = departments.dept_no "
+                            + "AND salaries.to_date = '9999-01-01' "
+                            + "AND departments.dept_no = " + sqlDepName
+                            + " ORDER BY employees.emp_no ASC";
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            // Extract employee information
+            ArrayList<Employee> employees = new ArrayList<Employee>();
+            while (rset.next()) {
+                Employee emp = new Employee();
+                emp.emp_no = rset.getInt("employees.emp_no");
+                emp.first_name = rset.getString("employees.first_name");
+                emp.last_name = rset.getString("employees.last_name");
+                emp.salary = rset.getInt("salaries.salary");
+                employees.add(emp);
+            }
+            return employees;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get salary details");
+            return null;
+        }
 
     }
 
