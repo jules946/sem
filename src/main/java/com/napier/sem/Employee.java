@@ -1,13 +1,9 @@
 package com.napier.sem;
-import java.sql.*;
-import java.sql.Statement;
 
 /**
  * Represents an employee
  */
-public class Employee
-{
-
+public class Employee {
     //Employee number
     public int emp_no;
 
@@ -24,10 +20,8 @@ public class Employee
     public int salary;
 
     //Employee's current department
-    public Department dept;
+    public String dept;
 
-    //Employee's manager
-    public Employee manager;
-
+    //Employee's manager (employee ID)
+    public int manager;
 }
-
