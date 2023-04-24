@@ -1,13 +1,11 @@
-import com.napier.sem.App;
-import com.napier.sem.Employee;
+import com.napier.sem.*;
+
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-
-class MyTest
+public class MyTest
 {
     static App app;
 
