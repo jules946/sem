@@ -5,7 +5,7 @@ import org.junit.jupiter.api.*;
 import java.util.ArrayList;
 
 
-public class MyTest
+class MyTest
 {
     static App app;
 
