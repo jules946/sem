@@ -5,7 +5,7 @@ package com.napier.sem;
  */
 public class Employee {
     //Employee number
-    public int emp_no;
+    public Integer emp_no;
 
     //Employee's first name
     public String first_name;
@@ -17,11 +17,11 @@ public class Employee {
     public String title;
 
     //Employee's salary
-    public int salary;
+    public Integer salary;
 
     //Employee's current department
     public String dept;
 
     //Employee's manager (employee ID)
-    public int manager;
+    public Integer manager;
 }
