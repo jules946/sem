@@ -84,6 +84,15 @@ public class App {
     }
 
     /**
+     * Check whether the database connection is established or not.
+     *
+     * @return true if the connection is established, false otherwise
+     */
+    public boolean isConnected() {
+        return con != null;
+    }
+
+    /**
      * Disconnect from the MySQL database.
      */
     public void disconnect() {
@@ -93,9 +102,13 @@ public class App {
                 con.close();
             } catch (Exception e) {
                 System.out.println("Error closing connection to database");
+            } finally {
+                // Set connection object to null
+                con = null;
             }
         }
     }
+
 
     public Employee getEmployee(int ID) {
         try {
