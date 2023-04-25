@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - '*'
 
 jobs:
   UnitTests:
@@ -59,6 +60,7 @@ jobs:
   build:
     name: Build in Docker and Deploy Release
     runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
